@@ -1,11 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tmelia <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/09/23 13:35:01 by tmelia            #+#    #+#             */
+/*   Updated: 2019/09/23 13:35:18 by tmelia           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "get_next_line.h"
 #include "libft/libft.h"
 
 int		new_str(char **str, int fd, char **line)
 {
-	int		len;
-	char	*tmp;
+	size_t		len;
+	char		*tmp;
 
 	len = 0;
 	while (str[fd][len] != '\0' && str[fd][len] != '\n')
@@ -13,16 +24,17 @@ int		new_str(char **str, int fd, char **line)
 	*line = ft_strsub(str[fd], 0, len);
 	tmp = ft_strdup(str[fd] + len + (str[fd][len] == '\n' ? 1 : 0));
 	free(str[fd]);
-	str[fd] = tmp;
+	if (tmp != '\0')
+		str[fd] = tmp;
 	return (1);
 }
 
-int get_next_line(const int fd, char **line)
+int		get_next_line(const int fd, char **line)
 {
-	static char	*str[252];
-	char 		*tmp;
-	int 		ret;
-	char 		buf[BUFF_SIZE + 1];
+	static char	*str[10];
+	char		*tmp;
+	int			ret;
+	char		buf[BUFF_SIZE + 1];
 
 	if (fd < 0 || !line)
 		return (-1);
@@ -30,7 +42,7 @@ int get_next_line(const int fd, char **line)
 	{
 		buf[ret] = '\0';
 		if (!str[fd])
-			str[fd] = ft_strnew(1);
+			str[fd] = ft_strnew(ret - 1);
 		tmp = ft_strjoin(str[fd], buf);
 		free(str[fd]);
 		str[fd] = tmp;
